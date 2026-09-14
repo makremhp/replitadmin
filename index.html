@@ -1,85 +1,65 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b1020">
-  <title>Replit Admin</title>
+  <meta name="theme-color" content="#071311">
+  <meta name="description" content="لوحة الإدارة المركزية">
+  <title>لوحة الإدارة | Replit Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="toast" class="toast"><span id="toastMessage"></span></div>
-  <section id="authScreen" class="auth-screen">
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-orb orb-one"></div><div class="auth-orb orb-two"></div>
     <div class="auth-card">
-      <div class="brand-mark">RA</div>
-      <p class="eyebrow">REPLIT ADMIN</p>
+      <div class="brand-mark large"><span class="brand-glyph">R</span></div>
+      <p class="eyebrow">CONTROL CENTER</p>
       <h1>دخول لوحة الإدارة</h1>
-      <p class="muted">أدخل رمز الإدارة للوصول الآمن إلى بيانات السيرفر.</p>
+      <p class="muted">أدخل رمز الإدارة للوصول إلى البيانات والعمليات الحساسة.</p>
       <form id="loginForm" class="stack-form">
-        <label>رمز الإدارة<input id="tokenInput" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
-        <button class="primary-button wide" type="submit">دخول آمن</button>
+        <label>رمز الإدارة<input id="loginToken" type="password" autocomplete="current-password" placeholder="••••••••••••" required></label>
+        <button class="primary-button full" type="submit"><span>دخول آمن</span><span class="button-loader"></span></button>
+        <p id="authError" class="form-error" aria-live="polite"></p>
       </form>
-      <p id="authError" class="form-error"></p>
     </div>
-  </section>
-
-  <div id="appRoot" class="app-shell hidden">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <div class="brand-lockup"><div class="brand-mark small">RA</div><div><strong>لوحة الإدارة</strong><span id="crumbTitle">نظرة عامة</span></div></div>
-        <div class="top-actions"><span class="live-dot"><i></i> مباشر</span><button id="refreshBtn" class="icon-button" title="تحديث">↻</button><button id="logoutBtn" class="icon-button" title="خروج">⇥</button></div>
-      </div>
-    </header>
-
-    <main class="page-wrap">
-      <section id="view-dashboard" class="view active">
-        <div class="page-heading"><div><p class="eyebrow">مركز التحكم</p><h1>نظرة عامة</h1><p id="overviewMessage" class="muted">جاري الاتصال...</p></div><button class="secondary-button" data-view="audit">سجل الإدارة</button></div>
-        <div class="stats-grid">
-          <article class="stat-card accent-cyan"><span>إجمالي المستخدمين</span><strong id="statUsers">—</strong><small id="statOnline">— متصل الآن</small></article>
-          <article class="stat-card accent-violet"><span>الرصيد الكلي</span><strong id="statBalance">—</strong><small>الرصيد المحجوز <b id="statReserved">—</b></small></article>
-          <article class="stat-card accent-amber"><span>سحوبات معلقة</span><strong id="statPending">—</strong><small id="statPendingAmount">—</small></article>
-          <article class="stat-card accent-green"><span>حالة قاعدة البيانات</span><strong id="healthValue">—</strong><small id="overviewSubtext">—</small></article>
-        </div>
-        <div class="quick-grid"><button data-view="users"><b>👥</b><span>إدارة المستخدمين</span><small>تعديل، حظر، حذف</small></button><button data-view="withdrawals"><b>↗</b><span>مراجعة السحوبات</span><small>قبول أو رفض الطلبات</small></button><button data-view="ads"><b>▣</b><span>أكواد الإعلانات</span><small>إضافة وحفظ مباشر</small></button><button data-view="server"><b>⚙</b><span>إعدادات السيرفر</span><small>الاقتصاد والحدود</small></button></div>
-        <div class="two-col"><article class="panel"><div class="panel-head"><div><h2>آخر السحوبات</h2><p class="muted">تحتاج مراجعة</p></div><button class="text-button" data-view="withdrawals">عرض الكل</button></div><div id="recentWithdrawals" class="compact-list"></div></article><article class="panel"><div class="panel-head"><div><h2>آخر نشاط إداري</h2><p class="muted">آخر العمليات</p></div><button class="text-button" data-view="audit">السجل الكامل</button></div><div id="recentAudit" class="compact-list"></div></article></div>
-      </section>
-
-      <section id="view-users" class="view">
-        <div class="page-heading"><div><p class="eyebrow">قاعدة المستخدمين</p><h1>المستخدمون <span id="usersCount" class="count-pill">—</span></h1><p class="muted">الأسماء والصور تُقرأ من جدول users في PostgreSQL.</p></div></div>
-        <div class="toolbar panel"><label class="search-field">⌕<input id="userSearch" placeholder="ابحث بالاسم، اليوزر أو Telegram ID"></label><select id="userStatus"><option value="all">كل المستخدمين</option><option value="online">نشطون الآن</option><option value="blocked">محظورون</option></select><button id="userSearchBtn" class="primary-button">بحث</button></div>
-        <div id="usersList" class="user-list"></div><div id="usersPagination" class="pagination"></div>
-      </section>
-
-      <section id="view-withdrawals" class="view">
-        <div class="page-heading"><div><p class="eyebrow">المعاملات</p><h1>السحوبات <span id="pendingCount" class="count-pill">—</span></h1><p class="muted">راجع العنوان والمبلغ قبل اتخاذ القرار.</p></div></div>
-        <div class="toolbar panel"><label class="search-field">⌕<input id="withdrawalSearch" placeholder="ابحث بالمعرف أو المحفظة"></label><select id="withdrawalStatus"><option value="pending">معلقة</option><option value="all">الكل</option><option value="approved">مقبولة</option><option value="rejected">مرفوضة</option></select><button id="withdrawalSearchBtn" class="primary-button">تحديث</button></div>
-        <div id="withdrawalsList" class="withdrawal-list"></div>
-      </section>
-
-      <section id="view-ads" class="view">
-        <div class="page-heading"><div><p class="eyebrow">تحقيق الدخل</p><h1>مصادر الإعلانات</h1><p class="muted">ألصق الكود كما هو. لا حاجة لتحويله إلى رابط.</p></div></div>
-        <form id="adsForm" class="stack-layout">
-          <article class="panel form-panel"><div class="panel-head"><div><h2>إعلان Banner ‏320×50</h2><p class="muted">يدعم HTML و JavaScript و iframe داخل مساحة معزولة.</p></div><span class="tag">RAW CODE</span></div><textarea id="fixedAdCode" class="code-input" dir="ltr" spellcheck="false" placeholder="<script>...</script>"></textarea></article>
-          <article class="panel form-panel"><div class="panel-head"><div><h2>إعلانات Social</h2><p class="muted">ألصق الكود أو أكثر من كود، وافصل بينها بالسطر: ---</p></div><span class="tag">ROTATION</span></div><textarea id="socialAdCode" class="code-input tall" dir="ltr" spellcheck="false" placeholder="<script src=\"https://...\"></script>"></textarea></article>
-          <article class="panel"><div class="panel-head"><div><h2>عدد وتوقيت الظهور</h2><p class="muted">تُحفظ في system_settings.</p></div></div><div class="field-grid four"><label>عدد العلوي<input id="adTopCount" type="number" min="1" max="12"></label><label>عدد السفلي<input id="adBottomCount" type="number" min="1" max="12"></label><label>تدوير العلوي (ms)<input id="adTopRotation" type="number" min="1000"></label><label>تدوير السفلي (ms)<input id="adBottomRotation" type="number" min="1000"></label></div></article>
-          <div class="form-actions"><button class="primary-button" type="submit">حفظ أكواد الإعلانات</button><span id="adsStatus" class="muted"></span></div>
-        </form>
-      </section>
-
-      <section id="view-server" class="view">
-        <div class="page-heading"><div><p class="eyebrow">التحكم الاقتصادي</p><h1>إعدادات السيرفر</h1><p class="muted">عدّل القيم الرقمية واحفظها دفعة واحدة.</p></div></div>
-        <form id="settingsForm"><div id="settingsGrid" class="settings-grid"></div><div class="form-actions"><button class="primary-button" type="submit">حفظ الإعدادات</button><span id="settingsStatus" class="muted"></span></div></form>
-      </section>
-
-      <section id="view-audit" class="view">
-        <div class="page-heading"><div><p class="eyebrow">الشفافية</p><h1>سجل الإدارة</h1><p class="muted">آخر 200 عملية مسجلة من لوحة الإدارة.</p></div></div><div id="auditList" class="audit-list panel"></div>
-      </section>
-    </main>
-
-    <nav class="bottom-nav" aria-label="التنقل الرئيسي"><button data-view="dashboard" class="active"><b>⌂</b><span>الرئيسية</span></button><button data-view="users"><b>♙</b><span>المستخدمون</span></button><button data-view="withdrawals"><b>↗</b><span>السحوبات</span><i id="navPending"></i></button><button data-view="ads"><b>▣</b><span>الإعلانات</span></button><button data-view="server"><b>⚙</b><span>الإعدادات</span></button></nav>
   </div>
 
-  <div id="modal" class="modal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><div class="modal-card"><div id="modalContent"></div></div></div>
+  <div id="appRoot" class="app-root hidden">
+    <header class="topbar">
+      <div class="brand-lockup"><div class="brand-mark"><span class="brand-glyph">R</span></div><div><strong>لوحة الإدارة</strong><span>replitadmin</span></div></div>
+      <div class="topbar-actions"><span id="liveClock" class="live-clock"></span><button id="logoutBtn" class="icon-button" title="تسجيل الخروج" aria-label="تسجيل الخروج"></button></div>
+    </header>
+    <main class="page-wrap">
+      <section id="view-dashboard" class="view active">
+        <div class="page-heading"><div><p class="eyebrow">نظرة عامة</p><h1>مرحبًا بك في المركز</h1><p id="overviewMessage" class="muted">جاري الاتصال بقاعدة البيانات...</p></div><button id="refreshBtn" class="icon-button ghost" title="تحديث" aria-label="تحديث"></button></div>
+        <div class="metric-grid">
+          <article class="metric-card accent-gold"><span class="metric-icon" id="metricUsersIcon"></span><small>إجمالي المستخدمين</small><strong id="statUsers">—</strong><span id="statOnline" class="metric-foot">— متصل الآن</span></article>
+          <article class="metric-card accent-teal"><span class="metric-icon" id="metricBalanceIcon"></span><small>إجمالي الرصيد</small><strong id="statBalance">—</strong><span class="metric-foot">USDT</span></article>
+          <article class="metric-card accent-amber"><span class="metric-icon" id="metricPendingIcon"></span><small>السحوبات المعلقة</small><strong id="statPending">—</strong><span id="statPendingAmount" class="metric-foot">—</span></article>
+          <article class="metric-card accent-blue"><span class="metric-icon" id="metricHealthIcon"></span><small>حالة النظام</small><strong id="healthValue">—</strong><span id="overviewSubtext" class="metric-foot">—</span></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">الوصول السريع</p><h2>إدارة يومية</h2></div></div>
+        <div class="quick-grid"><button class="quick-action" data-view="users"><span class="quick-icon" id="quickUsersIcon"></span><span><b>المستخدمون</b><small>بحث وإدارة الحسابات</small></span></button><button class="quick-action" data-view="withdrawals"><span class="quick-icon" id="quickWithdrawIcon"></span><span><b>السحوبات</b><small>مراجعة الطلبات</small></span></button><button class="quick-action" data-view="ads"><span class="quick-icon" id="quickAdsIcon"></span><span><b>الإعلانات</b><small>المصادر والدوران</small></span></button><button class="quick-action" data-view="settings"><span class="quick-icon" id="quickSettingsIcon"></span><span><b>الإعدادات</b><small>قيم النظام واللعبة</small></span></button></div>
+        <div class="split-grid"><article class="panel"><div class="panel-heading"><div><p class="eyebrow">آخر الطلبات</p><h2>السحوبات الأخيرة</h2></div><button class="text-button" data-view="withdrawals">عرض الكل</button></div><div id="recentWithdrawals" class="activity-list"><div class="skeleton-line"></div><div class="skeleton-line"></div></div></article><article class="panel"><div class="panel-heading"><div><p class="eyebrow">المراقبة</p><h2>آخر العمليات</h2></div><button class="text-button" data-view="audit">السجل</button></div><div id="recentAudit" class="activity-list"><div class="skeleton-line"></div><div class="skeleton-line"></div></div></article></div>
+      </section>
+
+      <section id="view-users" class="view"><div class="page-heading"><div><p class="eyebrow">إدارة الحسابات</p><h1>المستخدمون <span id="usersCount" class="count-pill">—</span></h1><p class="muted">ابحث وعدّل الحسابات من المصدر الحقيقي.</p></div></div><div class="toolbar panel"><div class="search-box"><span id="searchIcon"></span><input id="userSearch" placeholder="الاسم، username أو Telegram ID" autocomplete="off"></div><select id="userStatus" aria-label="تصفية الحالة"><option value="all">كل المستخدمين</option><option value="online">نشطون الآن</option><option value="blocked">محظورون</option></select><select id="userSort" aria-label="ترتيب المستخدمين"><option value="recent">الأحدث</option><option value="balance">الأعلى رصيدًا</option><option value="activity">الأكثر نشاطًا</option></select><button id="userSearchBtn" class="primary-button compact">بحث</button></div><div id="usersList" class="user-list"></div><div id="usersPagination" class="pagination"></div></section>
+
+      <section id="view-withdrawals" class="view"><div class="page-heading"><div><p class="eyebrow">المدفوعات</p><h1>السحوبات <span id="pendingCount" class="count-pill">—</span></h1><p class="muted">راجع الطلبات قبل اعتمادها أو رفضها.</p></div></div><div class="toolbar panel"><div class="search-box"><span id="withdrawSearchIcon"></span><input id="withdrawalSearch" placeholder="Telegram ID أو عنوان المحفظة"></div><select id="withdrawalStatus" aria-label="حالة السحب"><option value="pending">معلقة</option><option value="approved">مقبولة</option><option value="rejected">مرفوضة</option><option value="completed">مكتملة</option><option value="all">الكل</option></select><button id="withdrawalSearchBtn" class="primary-button compact">تحديث</button></div><div id="withdrawalsList" class="withdrawal-list"></div></section>
+
+      <section id="view-ads" class="view"><div class="page-heading"><div><p class="eyebrow">مصادر الإيرادات</p><h1>الإعلانات</h1><p class="muted">تعديل المصادر من السيرفر بدون تغيير الكود.</p></div></div><form id="adsForm" class="stack-form"><article class="panel form-panel"><div class="panel-heading"><div><p class="eyebrow">320 × 50</p><h2>إعلانات البانر</h2></div><button type="button" id="addFixedAd" class="secondary-button">إضافة مصدر</button></div><p class="muted">يمكن استخدام رابط HTTPS أو كود HTML. كل مصدر محفوظ في إعدادات النظام.</p><div id="fixedAdsList" class="dynamic-list"></div></article><article class="panel form-panel"><div class="panel-heading"><div><p class="eyebrow">SOCIAL</p><h2>الإعلانات الاجتماعية</h2></div><button type="button" id="addSocialAd" class="secondary-button">إضافة مصدر</button></div><div id="socialAdsList" class="dynamic-list"></div></article><article class="panel form-panel"><div class="panel-heading"><div><p class="eyebrow">ROTATION</p><h2>الدوران والتحكم</h2></div></div><div class="form-grid"><label>عدد البانر العلوي<input id="adTopCount" type="number" min="1" max="12"></label><label>عدد البانر السفلي<input id="adBottomCount" type="number" min="1" max="12"></label><label>دوران العلوي (ms)<input id="adTopRotation" type="number" min="1000"></label><label>دوران السفلي (ms)<input id="adBottomRotation" type="number" min="1000"></label></div></article><div class="form-actions"><button class="primary-button" type="submit">حفظ الإعلانات</button><span id="adsStatus" class="muted"></span></div></form></section>
+
+      <section id="view-settings" class="view"><div class="page-heading"><div><p class="eyebrow">التحكم المركزي</p><h1>الإعدادات</h1><p class="muted">كل قيمة هنا تُحفظ في قاعدة البيانات ويقرأها النظام من السيرفر.</p></div></div><form id="settingsForm" class="stack-form"><div id="settingsGrid" class="settings-grid"></div><div class="form-actions"><button class="primary-button" type="submit">حفظ الإعدادات</button><span id="settingsStatus" class="muted"></span></div></form><article class="panel security-panel"><div class="panel-heading"><div><p class="eyebrow">SECURITY</p><h2>حالة الحماية</h2></div><span class="status online">محمية</span></div><div class="security-grid"><div><span id="securityAuthIcon"></span><b>مصادقة الأدمن</b><small>جلسة Server-side</small></div><div><span id="securityApiIcon"></span><b>قاعدة البيانات</b><small id="securityDb">جاري الفحص</small></div><div><span id="securitySecretIcon"></span><b>الأسرار</b><small>غير معروضة في الواجهة</small></div></div></article></section>
+
+      <section id="view-audit" class="view"><div class="page-heading"><div><p class="eyebrow">التتبع والمساءلة</p><h1>سجل العمليات</h1><p class="muted">كل تعديل حساس يسجل مع الوقت والمستخدم المتأثر.</p></div></div><div id="auditList" class="audit-list panel"></div></section>
+    </main>
+    <nav class="bottom-nav" aria-label="التنقل الرئيسي"><button data-view="dashboard" class="active"><span id="navHomeIcon"></span><small>الرئيسية</small></button><button data-view="users"><span id="navUsersIcon"></span><small>المستخدمون</small></button><button data-view="withdrawals" class="nav-with-badge"><span id="navWithdrawIcon"></span><small>السحوبات</small><i id="navPending" class="nav-badge">0</i></button><button data-view="ads"><span id="navAdsIcon"></span><small>الإعلانات</small></button><button data-view="settings"><span id="navSettingsIcon"></span><small>الإعدادات</small></button></nav>
+  </div>
+  <div id="modal" class="modal" aria-hidden="true"><div id="modalContent" class="modal-card"></div></div>
+  <div id="toast" class="toast" role="status"><span id="toastIcon"></span><span id="toastMessage"></span></div>
   <script src="app.js"></script>
 </body>
 </html>
