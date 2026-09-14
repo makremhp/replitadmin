@@ -4,7 +4,7 @@ let pool;
 let migration;
 const error=(status,message)=>Object.assign(new Error(message),{status});
 function getPool(){if(!process.env.DATABASE_URL)throw error(503,'DATABASE_URL is not configured');if(!pool)pool=new Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.DATABASE_SSL==='false'?false:{rejectUnauthorized:false},max:5,idleTimeoutMillis:30000,connectionTimeoutMillis:10000});return pool}
-function send(res,status,body){res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');res.end(JSON.stringify(body))}
+function send(res,status,body){res.statusCode=status;res.setHeader('Content-Type','application/json; charset=utf-8');let payload;try{payload=JSON.stringify(body??{})}catch(e){res.statusCode=500;payload=JSON.stringify({error:'Response serialization failed',message:'تعذر تحويل استجابة الخادم إلى JSON'})}res.end(payload)}
 function parseCookies(req){return String(req.headers.cookie||'').split(';').reduce((all,item)=>{const i=item.indexOf('=');if(i>0)all[item.slice(0,i).trim()]=decodeURIComponent(item.slice(i+1));return all},{})}
 function tokenSignature(token){return crypto.createHmac('sha256',token).update('replit-admin-session').digest('hex')}
 function same(a,b){const aa=Buffer.from(String(a||''));const bb=Buffer.from(String(b||''));return aa.length===bb.length&&aa.length>0&&crypto.timingSafeEqual(aa,bb)}
