@@ -1,0 +1,7 @@
+{
+  "name":"replit-admin",
+  "version":"1.0.0",
+  "private":true,
+  "description":"Real database admin panel for the Replit project",
+  "dependencies":{"pg":"^8.13.1"}
+}
